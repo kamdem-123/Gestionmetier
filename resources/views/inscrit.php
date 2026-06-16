@@ -337,10 +337,10 @@
         </ul>
 
         <!-- Lien Laravel vers Google -->
-        <a href="http://127.0.0.1:8000/auth/google" class="btn-social">
-    <img src="https://www.google.com/favicon.ico" alt="Google" width="18" height="18">
-    Continuer avec Google
-</a>
+        <a href="<?php echo route('google.redirect'); ?>" class="btn-social">
+            <i class="fab fa-google"></i>
+            Continuer avec Google
+        </a>
 
         <p class="terms">
             En créant un compte, vous acceptez nos <a href="#">Conditions commerciales générales</a> 
@@ -349,13 +349,13 @@
 
         <div class="divider"><span>ou</span></div>
 
-        <a href="{{ route('register') }}" class="btn-email">
+        <a href="<?php echo route('register'); ?>" class="btn-email">
             <i class="far fa-envelope"></i>
             Continuer avec une adresse e-mail
         </a>
 
         <p class="login-link">
-            Vous avez déjà un compte ? <a href="connexion">Se connecter</a>
+            Vous avez déjà un compte ? <a href="<?php echo route('connexion'); ?>">Se connecter</a>
         </p>
     </div>
 
