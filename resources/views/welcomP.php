@@ -1,3 +1,110 @@
+<?php
+// Connexion à la base de données via Laravel
+$search_keyword = isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword'], ENT_QUOTES, 'UTF-8') : '';
+$search_location = isset($_GET['location']) ? htmlspecialchars($_GET['location'], ENT_QUOTES, 'UTF-8') : '';
+
+$latest_jobs = [];
+
+try {
+    $latest_jobs = DB::table('offres as o')
+        ->leftJoin('entreprises as e', 'o.entreprise_id', 'e.id')
+        ->select('o.*', 'e.nom as entreprise_nom')
+        ->orderByDesc('o.date_publication')
+        ->limit(8)
+        ->get()
+        ->map(function ($item) {
+            $job = (array) $item;
+            $job['tags'] = $job['tags'] ?? '';
+            $job['flag'] = $job['flag'] ?? '';
+            $job['salary_eur'] = $job['salary_eur'] ?? 0;
+            $job['salary_type'] = $job['salary_type'] ?? 'year';
+            return $job;
+        })
+        ->toArray();
+} catch (\Throwable $e) {
+    $latest_jobs = [];
+}
+
+if (empty($latest_jobs)) {
+    $latest_jobs = [
+        [
+            'titre' => 'Développeur Full Stack',
+            'entreprise_nom' => 'TechCorp Solutions',
+            'type_contrat' => 'CDI',
+            'tags' => 'React,Laravel,MySQL',
+            'salaire' => '45 000',
+            'devise' => '€',
+            'periode' => '/an',
+            'ville' => 'Paris',
+            'pays' => 'France',
+            'flag' => '🇫🇷',
+            'date_publication' => '2026-06-10',
+            'salary_eur' => 45000,
+            'salary_type' => 'year'
+        ],
+        [
+            'titre' => 'Chef de Projet Marketing',
+            'entreprise_nom' => 'Digital Agency',
+            'type_contrat' => 'CDD',
+            'tags' => 'SEO,Google Ads,Analytics',
+            'salaire' => '38 000',
+            'devise' => '€',
+            'periode' => '/an',
+            'ville' => 'Lyon',
+            'pays' => 'France',
+            'flag' => '🇫🇷',
+            'date_publication' => '2026-06-11',
+            'salary_eur' => 38000,
+            'salary_type' => 'year'
+        ],
+        [
+            'titre' => 'Data Scientist',
+            'entreprise_nom' => 'AI Innovations',
+            'type_contrat' => 'Freelance',
+            'tags' => 'Python,Machine Learning,TensorFlow',
+            'salaire' => '500',
+            'devise' => '€',
+            'periode' => '/jour',
+            'ville' => 'Montréal',
+            'pays' => 'Canada',
+            'flag' => '🇨🇦',
+            'date_publication' => '2026-06-14',
+            'salary_eur' => 500,
+            'salary_type' => 'day'
+        ],
+        [
+            'titre' => 'UX/UI Designer',
+            'entreprise_nom' => 'Creative Studio',
+            'type_contrat' => 'Stage',
+            'tags' => 'Figma,Adobe XD,Prototypage',
+            'salaire' => '150 000',
+            'devise' => 'FCFA',
+            'periode' => '/mois',
+            'ville' => 'Douala',
+            'pays' => 'Cameroun',
+            'flag' => '🇨🇲',
+            'date_publication' => '2026-06-13',
+            'salary_eur' => 229,
+            'salary_type' => 'month'
+        ],
+        [
+            'titre' => 'Ingénieur DevOps',
+            'entreprise_nom' => 'Cloud Systems',
+            'type_contrat' => 'CDI',
+            'tags' => 'Docker,Kubernetes,AWS',
+            'salaire' => '55 000',
+            'devise' => '€',
+            'periode' => '/an',
+            'ville' => 'Bruxelles',
+            'pays' => 'Belgique',
+            'flag' => '🇧🇪',
+            'date_publication' => '2026-06-09',
+            'salary_eur' => 55000,
+            'salary_type' => 'year'
+        ]
+    ];
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -709,7 +816,7 @@
 
     <!-- Navigation -->
     <nav class="navbar">
-        <a href="#" class="logo">
+        <a href="#accueil" class="logo">
             <i class="fas fa-briefcase"></i>
             JobAI
         </a>
@@ -1095,7 +1202,7 @@
             </div>
         </div>
         <div style="text-align: center; margin-top: 3rem;">
-            <a href="/offres" class="btn btn-primary">
+            <a href="/recherche-metier.php" class="btn btn-primary">
                 <i class="fas fa-list"></i> Voir toutes les offres
             </a>
         </div>
@@ -1109,7 +1216,7 @@
             <a href="/inscrit" class="btn btn-white">
                 <i class="fas fa-user-plus"></i> Créer un compte candidat
             </a>
-            <a href="/register?type=employeur" class="btn btn-outline" style="color: white; border-color: white;">
+            <a href="/publier_offre.php" class="btn btn-outline" style="color: white; border-color: white;">
                 <i class="fas fa-building"></i> Publier une offre
             </a>
         </div>
@@ -1140,7 +1247,7 @@
             </div>
             <div class="footer-section">
                 <h4>Candidats</h4>
-                <a href="/offres">Rechercher un emploi</a>
+                <a href="/recherche-metier.php">Rechercher un emploi</a>
                 <a href="/inscrit">Créer un profil</a>
                 <a href="/matching">Matching IA</a>
                 <a href="/conseils">Conseils carrière</a>
@@ -1247,7 +1354,7 @@
             event.preventDefault();
             const keyword = document.getElementById('search-keyword').value;
             const location = document.getElementById('search-location').value;
-            window.location.href = `/offres?keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}`;
+            window.location.href = `/recherche-metier.php?keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}`;
         }
 
         // Smooth scroll pour les ancres

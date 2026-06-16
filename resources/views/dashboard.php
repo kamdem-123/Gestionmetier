@@ -1,4 +1,4 @@
-{{-- resources/views/dashboard.blade.php --}}
+<?php /* resources/views/dashboard.php */ ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -16,20 +16,20 @@
 </head>
 <body>
     <div class="card">
-        <h1>👋 Bienvenue, {{ Auth::user()->name }} !</h1>
+        <h1>👋 Bienvenue, <?php echo Auth::user()->name; ?> !</h1>
         
-        @if(Auth::user()->avatar)
-            <img src="{{ Auth::user()->avatar }}" alt="Photo" class="avatar">
-        @endif
+        <?php if(Auth::user()->avatar): ?>
+            <img src="<?php echo Auth::user()->avatar; ?>" alt="Photo" class="avatar">
+        <?php endif; ?>
         
         <div class="info">
-            <p><span class="label">Nom complet :</span> {{ Auth::user()->name }}</p>
-            <p><span class="label">Email :</span> {{ Auth::user()->email }}</p>
-            <p><span class="label">ID Google :</span> {{ Auth::user()->google_id }}</p>
+            <p><span class="label">Nom complet :</span> <?php echo Auth::user()->name; ?></p>
+            <p><span class="label">Email :</span> <?php echo Auth::user()->email; ?></p>
+            <p><span class="label">ID Google :</span> <?php echo Auth::user()->google_id; ?></p>
         </div>
         
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
+        <form method="POST" action="<?php echo route('logout'); ?>">
+            <?php echo csrf_field(); ?>
             <button type="submit" class="logout">Se déconnecter</button>
         </form>
     </div>

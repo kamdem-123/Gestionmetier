@@ -337,7 +337,7 @@
         </ul>
 
         <!-- Lien Laravel vers Google -->
-        <a href="http://127.0.0.1:8000/auth/google" class="btn-social">
+        <a href="<?php echo route('google.redirect'); ?>" class="btn-social">
             <i class="fab fa-google"></i>
             Continuer avec Google
         </a>
@@ -349,13 +349,13 @@
 
         <div class="divider"><span>ou</span></div>
 
-        <a href="{{ route('login') }}" class="btn-email">
+        <a href="<?php echo route('login'); ?>" class="btn-email">
             <i class="far fa-envelope"></i>
             Continuer avec une adresse e-mail
         </a>
 
         <p class="login-link">
-            Vous n'avez pas de compte ? <a href="inscrit">S'inscrire</a>
+            Vous n'avez pas de compte ? <a href="<?php echo route('inscrit'); ?>">S'inscrire</a>
         </p>
     </div>
 

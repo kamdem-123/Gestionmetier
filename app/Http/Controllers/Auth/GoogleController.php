@@ -52,7 +52,7 @@ class GoogleController extends Controller
              return redirect()->route('dashboard');
 
         } catch (\Exception $e) {
-            return redirect('/dashboard')->with('error', 'Erreur Google : ' . $e->getMessage());
+            return redirect('/b')->with('error', 'Erreur Google : ' . $e->getMessage());
         }
     }
 }
