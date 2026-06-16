@@ -15,7 +15,7 @@ use App\Http\Controllers\JobController;
 
 Route::get('/home', [PageController::class, 'welcome'])->name('home');
 
-Route::get('/inscrit', [AuthController::class, 'showRegister'])->name('inscrit');
+Route::get('/inscrit', [PageController::class, 'signUp'])->name('inscrit');
 Route::post('/inscrit', [AuthController::class, 'register'])->name('inscrit.submit');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
