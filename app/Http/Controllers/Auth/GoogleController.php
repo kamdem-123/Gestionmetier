@@ -41,10 +41,11 @@ class GoogleController extends Controller
             $user = User::updateOrCreate(
                 ['email' => $googleUser->getEmail()],
                 [
-                    'name' => $googleUser->getName(),
-                    'google_id' => $googleUser->getId(),
-                    'avatar' => $googleUser->getAvatar(),
-                    'password' => Hash::make(uniqid()),
+                    'name'              => $googleUser->getName(),
+                    'google_id'         => $googleUser->getId(),
+                    'avatar'            => $googleUser->getAvatar(),
+                    'password'          => Hash::make(uniqid()),
+                    'email_verified_at' => now(),
                 ]
             );
 

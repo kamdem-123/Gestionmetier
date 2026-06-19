@@ -32,6 +32,8 @@ try {
     }
     
     $sql = file_get_contents($sql_file);
+    // Supprimer les commentaires SQL pour éviter que des requêtes soient ignorées
+    $sql = preg_replace('/--.*$/m', '', $sql);
     
     // Exécuter les requêtes
     $statements = array_filter(array_map('trim', explode(';', $sql)));

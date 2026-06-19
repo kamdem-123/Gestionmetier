@@ -6,56 +6,49 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     public function showLogin()
     {
-        return view('login');
+        return view('connexion');
     }
 
     public function login(Request $request)
     {
         $request->validate([
-            'email' => ['required', 'email'],
+            'email'    => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
 
-        $credentials = $request->only('email', 'password');
-
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             $request->session()->regenerate();
             $user = Auth::user();
-            
-            // Rediriger les admins vers /admin
-            if ($user->is_admin) {
-                return redirect('/admin');
-            }
-            
-            return redirect()->intended('/dashboard');
+
+            return match(true) {
+                $user->isAdmin()     => redirect('/admin'),
+                $user->isEmployeur() => redirect('/employeur'),
+                default              => redirect()->intended('/dashboard'),
+            };
         }
 
         return back()->withErrors(['email' => 'Email ou mot de passe invalide.'])->withInput();
     }
 
-    public function showRegister()
-    {
-        return view('register');
-    }
-
     public function register(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
+        // Le cast 'hashed' du modèle User gère le hashage — ne pas appeler Hash::make()
         $user = User::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => $request->password,
+            'role'     => User::ROLE_CANDIDAT,
         ]);
 
         Auth::login($user);

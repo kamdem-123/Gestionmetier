@@ -29,4 +29,9 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', 'http://localhost:8000/auth/google/callback'),
     ],
 
+    'huggingface' => [
+        'api_key'     => env('HUGGINGFACE_API_KEY'),
+        'seuil_score' => env('MATCHING_SCORE_SEUIL', 70),
+    ],
+
 ];

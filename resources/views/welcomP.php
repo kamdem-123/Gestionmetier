@@ -9,100 +9,21 @@ try {
     $latest_jobs = DB::table('offres as o')
         ->leftJoin('entreprises as e', 'o.entreprise_id', 'e.id')
         ->select('o.*', 'e.nom as entreprise_nom')
+        ->where('o.status', 'active')
         ->orderByDesc('o.date_publication')
-        ->limit(8)
+        ->limit(6)
         ->get()
         ->map(function ($item) {
             $job = (array) $item;
-            $job['tags'] = $job['tags'] ?? '';
+            $job['tags'] = $job['competences'] ?? $job['tags'] ?? '';
             $job['flag'] = $job['flag'] ?? '';
             $job['salary_eur'] = $job['salary_eur'] ?? 0;
-            $job['salary_type'] = $job['salary_type'] ?? 'year';
+            $job['salary_type'] = $job['salary_type'] ?? 'month';
             return $job;
         })
         ->toArray();
 } catch (\Throwable $e) {
     $latest_jobs = [];
-}
-
-if (empty($latest_jobs)) {
-    $latest_jobs = [
-        [
-            'titre' => 'Développeur Full Stack',
-            'entreprise_nom' => 'TechCorp Solutions',
-            'type_contrat' => 'CDI',
-            'tags' => 'React,Laravel,MySQL',
-            'salaire' => '45 000',
-            'devise' => '€',
-            'periode' => '/an',
-            'ville' => 'Paris',
-            'pays' => 'France',
-            'flag' => '🇫🇷',
-            'date_publication' => '2026-06-10',
-            'salary_eur' => 45000,
-            'salary_type' => 'year'
-        ],
-        [
-            'titre' => 'Chef de Projet Marketing',
-            'entreprise_nom' => 'Digital Agency',
-            'type_contrat' => 'CDD',
-            'tags' => 'SEO,Google Ads,Analytics',
-            'salaire' => '38 000',
-            'devise' => '€',
-            'periode' => '/an',
-            'ville' => 'Lyon',
-            'pays' => 'France',
-            'flag' => '🇫🇷',
-            'date_publication' => '2026-06-11',
-            'salary_eur' => 38000,
-            'salary_type' => 'year'
-        ],
-        [
-            'titre' => 'Data Scientist',
-            'entreprise_nom' => 'AI Innovations',
-            'type_contrat' => 'Freelance',
-            'tags' => 'Python,Machine Learning,TensorFlow',
-            'salaire' => '500',
-            'devise' => '€',
-            'periode' => '/jour',
-            'ville' => 'Montréal',
-            'pays' => 'Canada',
-            'flag' => '🇨🇦',
-            'date_publication' => '2026-06-14',
-            'salary_eur' => 500,
-            'salary_type' => 'day'
-        ],
-        [
-            'titre' => 'UX/UI Designer',
-            'entreprise_nom' => 'Creative Studio',
-            'type_contrat' => 'Stage',
-            'tags' => 'Figma,Adobe XD,Prototypage',
-            'salaire' => '150 000',
-            'devise' => 'FCFA',
-            'periode' => '/mois',
-            'ville' => 'Douala',
-            'pays' => 'Cameroun',
-            'flag' => '🇨🇲',
-            'date_publication' => '2026-06-13',
-            'salary_eur' => 229,
-            'salary_type' => 'month'
-        ],
-        [
-            'titre' => 'Ingénieur DevOps',
-            'entreprise_nom' => 'Cloud Systems',
-            'type_contrat' => 'CDI',
-            'tags' => 'Docker,Kubernetes,AWS',
-            'salaire' => '55 000',
-            'devise' => '€',
-            'periode' => '/an',
-            'ville' => 'Bruxelles',
-            'pays' => 'Belgique',
-            'flag' => '🇧🇪',
-            'date_publication' => '2026-06-09',
-            'salary_eur' => 55000,
-            'salary_type' => 'year'
-        ]
-    ];
 }
 ?>
 <!DOCTYPE html>
@@ -839,7 +760,7 @@ if (empty($latest_jobs)) {
             <h1>Trouvez le métier qui vous correspond grâce à l'IA</h1>
             <p>Notre intelligence artificielle analyse votre profil et vous propose les meilleures opportunités professionnelles adaptées à vos compétences.</p>
             <div class="hero-buttons">
-                <a href="/register" class="btn btn-primary">
+                <a href="/inscrit" class="btn btn-primary">
                     <i class="fas fa-rocket"></i> Commencer gratuitement
                 </a>
                 <a href="#comment-ca-marche" class="btn btn-outline" style="color: white; border-color: white;">
@@ -971,34 +892,34 @@ if (empty($latest_jobs)) {
             <div class="filter-group">
                 <label for="country-select"><i class="fas fa-globe"></i> Pays :</label>
                 <select id="country-select" onchange="updateCountryDisplay()">
-                    <option value="CM" data-currency="XAF" data-symbol="FCFA" data-flag="🇨🇲" data-name="Cameroun">🇨🇲 Cameroun</option>
-                    <option value="SN" data-currency="XOF" data-symbol="FCFA" data-flag="🇸🇳" data-name="Sénégal">🇸🇳 Sénégal</option>
-                    <option value="CI" data-currency="XOF" data-symbol="FCFA" data-flag="🇨🇮" data-name="Côte d'Ivoire">🇨🇮 Côte d'Ivoire</option>
-                    <option value="GA" data-currency="XAF" data-symbol="FCFA" data-flag="🇬🇦" data-name="Gabon">🇬🇦 Gabon</option>
-                    <option value="GH" data-currency="GHS" data-symbol="GH₵" data-flag="🇬🇭" data-name="Ghana">🇬🇭 Ghana</option>
-                    <option value="NG" data-currency="NGN" data-symbol="₦" data-flag="🇳🇬" data-name="Nigéria">🇳🇬 Nigéria</option>
-                    <option value="FR" data-currency="EUR" data-symbol="€" data-flag="🇫🇷" data-name="France">🇫🇷 France</option>
-                    <option value="CA" data-currency="CAD" data-symbol="$" data-flag="🇨🇦" data-name="Canada">🇨🇦 Canada</option>
-                    <option value="BE" data-currency="EUR" data-symbol="€" data-flag="🇧🇪" data-name="Belgique">🇧🇪 Belgique</option>
-                    <option value="CH" data-currency="CHF" data-symbol="CHF" data-flag="🇨🇭" data-name="Suisse">🇨🇭 Suisse</option>
-                    <option value="LU" data-currency="EUR" data-symbol="€" data-flag="🇱🇺" data-name="Luxembourg">🇱🇺 Luxembourg</option>
-                    <option value="DE" data-currency="EUR" data-symbol="€" data-flag="🇩🇪" data-name="Allemagne">🇩🇪 Allemagne</option>
-                    <option value="GB" data-currency="GBP" data-symbol="£" data-flag="🇬🇧" data-name="Royaume-Uni">🇬🇧 Royaume-Uni</option>
-                    <option value="US" data-currency="USD" data-symbol="$" data-flag="🇺🇸" data-name="États-Unis">🇺🇸 États-Unis</option>
-                    <option value="CG" data-currency="XAF" data-symbol="FCFA" data-flag="🇨🇬" data-name="Congo">🇨🇬 Congo</option>
-                    <option value="TG" data-currency="XOF" data-symbol="FCFA" data-flag="🇹🇬" data-name="Togo">🇹🇬 Togo</option>
-                    <option value="BJ" data-currency="XOF" data-symbol="FCFA" data-flag="🇧🇯" data-name="Bénin">🇧🇯 Bénin</option>
-                    <option value="BF" data-currency="XOF" data-symbol="FCFA" data-flag="🇧🇫" data-name="Burkina Faso">🇧🇫 Burkina Faso</option>
-                    <option value="ML" data-currency="XOF" data-symbol="FCFA" data-flag="🇲🇱" data-name="Mali">🇲🇱 Mali</option>
-                    <option value="NE" data-currency="XOF" data-symbol="FCFA" data-flag="🇳🇪" data-name="Niger">🇳🇪 Niger</option>
-                    <option value="GQ" data-currency="XAF" data-symbol="FCFA" data-flag="🇬🇶" data-name="Guinée Éq.">🇬🇶 Guinée Équatoriale</option>
-                    <option value="TD" data-currency="XAF" data-symbol="FCFA" data-flag="🇹🇩" data-name="Tchad">🇹🇩 Tchad</option>
-                    <option value="CF" data-currency="XAF" data-symbol="FCFA" data-flag="🇨🇫" data-name="Centrafrique">🇨🇫 Centrafrique</option>
-                    <option value="MA" data-currency="MAD" data-symbol="DH" data-flag="🇲🇦" data-name="Maroc">🇲🇦 Maroc</option>
-                    <option value="TN" data-currency="TND" data-symbol="DT" data-flag="🇹🇳" data-name="Tunisie">🇹🇳 Tunisie</option>
-                    <option value="DZ" data-currency="DZD" data-symbol="DA" data-flag="🇩🇿" data-name="Algérie">🇩🇿 Algérie</option>
-                    <option value="RW" data-currency="RWF" data-symbol="FR" data-flag="🇷🇼" data-name="Rwanda">🇷🇼 Rwanda</option>
-                    <option value="KE" data-currency="KES" data-symbol="KSh" data-flag="🇰🇪" data-name="Kenya">🇰🇪 Kenya</option>
+                    <option value="CM" data-currency="XAF" data-symbol="FCFA" data-flag="CM" data-name="Cameroun">CM Cameroun</option>
+                    <option value="SN" data-currency="XOF" data-symbol="FCFA" data-flag="SN" data-name="Sénégal">SN Sénégal</option>
+                    <option value="CI" data-currency="XOF" data-symbol="FCFA" data-flag="CI" data-name="Côte d'Ivoire">CI Côte d'Ivoire</option>
+                    <option value="GA" data-currency="XAF" data-symbol="FCFA" data-flag="GA" data-name="Gabon">GA Gabon</option>
+                    <option value="GH" data-currency="GHS" data-symbol="GH₵" data-flag="GH" data-name="Ghana">GH Ghana</option>
+                    <option value="NG" data-currency="NGN" data-symbol="₦" data-flag="NG" data-name="Nigéria">NG Nigéria</option>
+                    <option value="FR" data-currency="EUR" data-symbol="€" data-flag="FR" data-name="France">FR France</option>
+                    <option value="CA" data-currency="CAD" data-symbol="$" data-flag="CA" data-name="Canada">CA Canada</option>
+                    <option value="BE" data-currency="EUR" data-symbol="€" data-flag="BE" data-name="Belgique">BE Belgique</option>
+                    <option value="CH" data-currency="CHF" data-symbol="CHF" data-flag="CH" data-name="Suisse">CH Suisse</option>
+                    <option value="LU" data-currency="EUR" data-symbol="€" data-flag="LU" data-name="Luxembourg">LU Luxembourg</option>
+                    <option value="DE" data-currency="EUR" data-symbol="€" data-flag="DE" data-name="Allemagne">DE Allemagne</option>
+                    <option value="GB" data-currency="GBP" data-symbol="£" data-flag="GB" data-name="Royaume-Uni">GB Royaume-Uni</option>
+                    <option value="US" data-currency="USD" data-symbol="$" data-flag="US" data-name="États-Unis">US États-Unis</option>
+                    <option value="CG" data-currency="XAF" data-symbol="FCFA" data-flag="CG" data-name="Congo">CG Congo</option>
+                    <option value="TG" data-currency="XOF" data-symbol="FCFA" data-flag="TG" data-name="Togo">TG Togo</option>
+                    <option value="BJ" data-currency="XOF" data-symbol="FCFA" data-flag="BJ" data-name="Bénin">BJ Bénin</option>
+                    <option value="BF" data-currency="XOF" data-symbol="FCFA" data-flag="BF" data-name="Burkina Faso">BF Burkina Faso</option>
+                    <option value="ML" data-currency="XOF" data-symbol="FCFA" data-flag="ML" data-name="Mali">ML Mali</option>
+                    <option value="NE" data-currency="XOF" data-symbol="FCFA" data-flag="NE" data-name="Niger">NE Niger</option>
+                    <option value="GQ" data-currency="XAF" data-symbol="FCFA" data-flag="GQ" data-name="Guinée Éq.">GQ Guinée Équatoriale</option>
+                    <option value="TD" data-currency="XAF" data-symbol="FCFA" data-flag="TD" data-name="Tchad">TD Tchad</option>
+                    <option value="CF" data-currency="XAF" data-symbol="FCFA" data-flag="CF" data-name="Centrafrique">CF Centrafrique</option>
+                    <option value="MA" data-currency="MAD" data-symbol="DH" data-flag="MA" data-name="Maroc">MA Maroc</option>
+                    <option value="TN" data-currency="TND" data-symbol="DT" data-flag="TN" data-name="Tunisie">TN Tunisie</option>
+                    <option value="DZ" data-currency="DZD" data-symbol="DA" data-flag="DZ" data-name="Algérie">DZ Algérie</option>
+                    <option value="RW" data-currency="RWF" data-symbol="FR" data-flag="RW" data-name="Rwanda">RW Rwanda</option>
+                    <option value="KE" data-currency="KES" data-symbol="KSh" data-flag="KE" data-name="Kenya">KE Kenya</option>
                 </select>
             </div>
             <div class="currency-badge" id="currency-display">
@@ -1008,201 +929,56 @@ if (empty($latest_jobs)) {
         </div>
 
         <div class="jobs-grid" id="jobs-container">
-            <!-- Les offres avec data-salary pour conversion -->
-            <div class="job-card fade-in" data-salary-eur="943.15" data-salary-type="year">
+            <?php foreach ($latest_jobs as $offre):
+                $tags_raw = !empty($offre['tags']) ? $offre['tags'] : ($offre['competences'] ?? '');
+                $tags = array_slice(array_filter(array_map('trim', explode(',', $tags_raw))), 0, 3);
+                $sal_type = $offre['salary_type'] ?? 'year';
+                $sal_label = $sal_type === 'day' ? '/jour' : ($sal_type === 'month' ? '/mois' : '/an');
+                if (!empty($offre['salaire'])) {
+                    $salaire_display = $offre['salaire'] . ' ' . ($offre['devise'] ?? '€') . ($offre['periode'] ?? $sal_label);
+                } else {
+                    $salaire_display = number_format((float)($offre['salary_eur'] ?? 0), 2, '.', ' ') . ' €' . $sal_label;
+                }
+                $offre_id = $offre['id'] ?? null;
+            ?>
+            <div class="job-card fade-in"
+                 data-salary-eur="<?= htmlspecialchars((string)($offre['salary_eur'] ?? 0)) ?>"
+                 data-salary-type="<?= htmlspecialchars($sal_type) ?>">
                 <div class="job-header">
                     <div>
-                        <div class="job-title">Développeur Full Stack</div>
+                        <div class="job-title"><?= htmlspecialchars($offre['titre'] ?? '') ?></div>
                         <div class="job-company">
-                            <i class="fas fa-building"></i> TechCorp Solutions
+                            <i class="fas fa-building"></i> <?= htmlspecialchars($offre['entreprise_nom'] ?? '') ?>
                         </div>
                     </div>
-                    <span class="job-type">CDI</span>
+                    <span class="job-type"><?= htmlspecialchars($offre['type_contrat'] ?? '') ?></span>
                 </div>
                 <div class="job-tags">
-                    <span class="job-tag">React</span>
-                    <span class="job-tag">Laravel</span>
-                    <span class="job-tag">MySQL</span>
+                    <?php foreach ($tags as $tag): ?>
+                        <span class="job-tag"><?= htmlspecialchars($tag) ?></span>
+                    <?php endforeach; ?>
                 </div>
                 <div class="job-footer">
-                    <span class="job-salary" data-base-salary="943.15">943.15 €/an</span>
+                    <span class="job-salary" data-base-salary="<?= htmlspecialchars((string)($offre['salary_eur'] ?? 0)) ?>">
+                        <?= htmlspecialchars($salaire_display) ?>
+                    </span>
                     <span class="job-location">
-                        <span class="job-country-flag">🇫🇷</span> 
-                        <span class="job-country-name">Paris, France</span>
+                        <span class="job-country-flag"><?= $offre['flag'] ?? '' ?></span>
+                        <span class="job-country-name"><?= htmlspecialchars(trim(($offre['ville'] ?? '') . ', ' . ($offre['pays'] ?? ''), ', ')) ?></span>
                     </span>
                 </div>
+                <?php if ($offre_id): ?>
+                <a href="/postuler.php?id=<?= $offre_id ?>"
+                   class="inline-block mt-3 bg-blue-600 hover:bg-blue-700 text-white
+                          text-sm font-semibold px-4 py-2 rounded-lg transition">
+                    Postuler →
+                </a>
+                <?php endif; ?>
             </div>
-
-            <div class="job-card fade-in" data-salary-eur="943.15" data-salary-type="year">
-                <div class="job-header">
-                    <div>
-                        <div class="job-title">Chef de Projet Marketing</div>
-                        <div class="job-company">
-                            <i class="fas fa-building"></i> Digital Agency
-                        </div>
-                    </div>
-                    <span class="job-type">CDD</span>
-                </div>
-                <div class="job-tags">
-                    <span class="job-tag">SEO</span>
-                    <span class="job-tag">Google Ads</span>
-                    <span class="job-tag">Analytics</span>
-                </div>
-                <div class="job-footer">
-                    <span class="job-salary" data-base-salary="943.15">943.15€/an</span>
-                    <span class="job-location">
-                        <span class="job-country-flag">🇫🇷</span> 
-                        <span class="job-country-name">Lyon, France</span>
-                    </span>
-                </div>
-            </div>
-
-            <div class="job-card fade-in" data-salary-eur="10,908.00" data-salary-type="day">
-                <div class="job-header">
-                    <div>
-                        <div class="job-title">Data Scientist</div>
-                        <div class="job-company">
-                            <i class="fas fa-building"></i> AI Innovations
-                        </div>
-                    </div>
-                    <span class="job-type">Freelance</span>
-                </div>
-                <div class="job-tags">
-                    <span class="job-tag">Python</span>
-                    <span class="job-tag">Machine Learning</span>
-                    <span class="job-tag">TensorFlow</span>
-                </div>
-                <div class="job-footer">
-                    <span class="job-salary" data-base-salary="10,908.00">10,908.00 €/jour</span>
-                    <span class="job-location">
-                        <span class="job-country-flag">🇨🇦</span> 
-                        <span class="job-country-name">Montréal, Canada</span>
-                    </span>
-                </div>
-            </div>
-
-            <div class="job-card fade-in" data-salary-eur="10,908.00" data-salary-type="month">
-                <div class="job-header">
-                    <div>
-                        <div class="job-title">UX/UI Designer</div>
-                        <div class="job-company">
-                            <i class="fas fa-building"></i> Creative Studio
-                        </div>
-                    </div>
-                    <span class="job-type">Stage</span>
-                </div>
-                <div class="job-tags">
-                    <span class="job-tag">Figma</span>
-                    <span class="job-tag">Adobe XD</span>
-                    <span class="job-tag">Prototypage</span>
-                </div>
-                <div class="job-footer">
-                    <span class="job-salary" data-base-salary="10,908.00">10,908.00 €/mois</span>
-                    <span class="job-location">
-                        <span class="job-country-flag">🇨🇲</span> 
-                        <span class="job-country-name">Douala, Cameroun</span>
-                    </span>
-                </div>
-            </div>
-
-            <div class="job-card fade-in" data-salary-eur="943.1 " data-salary-type="year">
-                <div class="job-header">
-                    <div>
-                        <div class="job-title">Ingénieur DevOps</div>
-                        <div class="job-company">
-                            <i class="fas fa-building"></i> Cloud Systems
-                        </div>
-                    </div>
-                    <span class="job-type">CDI</span>
-                </div>
-                <div class="job-tags">
-                    <span class="job-tag">Docker</span>
-                    <span class="job-tag">Kubernetes</span>
-                    <span class="job-tag">AWS</span>
-                </div>
-                <div class="job-footer">
-                    <span class="job-salary" data-base-salary="943.1 ">943.1 €/an</span>
-                    <span class="job-location">
-                        <span class="job-country-flag">🇧🇪</span> 
-                        <span class="job-country-name">Bruxelles, Belgique</span>
-                    </span>
-                </div>
-            </div>
-
-            <div class="job-card fade-in" data-salary-eur="943.1 " data-salary-type="year">
-                <div class="job-header">
-                    <div>
-                        <div class="job-title">Consultant SAP</div>
-                        <div class="job-company">
-                            <i class="fas fa-building"></i> ERP Consulting
-                        </div>
-                    </div>
-                    <span class="job-type">CDI</span>
-                </div>
-                <div class="job-tags">
-                    <span class="job-tag">SAP</span>
-                    <span class="job-tag">ABAP</span>
-                    <span class="job-tag">FI/CO</span>
-                </div>
-                <div class="job-footer">
-                    <span class="job-salary" data-base-salary="943.1 ">943.1  €/an</span>
-                    <span class="job-location">
-                        <span class="job-country-flag">🇨🇭</span> 
-                        <span class="job-country-name">Genève, Suisse</span>
-                    </span>
-                </div>
-            </div>
-
-            <div class="job-card fade-in" data-salary-eur="2500" data-salary-type="month">
-                <div class="job-header">
-                    <div>
-                        <div class="job-title">Développeur Mobile Flutter</div>
-                        <div class="job-company">
-                            <i class="fas fa-building"></i> Savtontine Tech
-                        </div>
-                    </div>
-                    <span class="job-type">CDI</span>
-                </div>
-                <div class="job-tags">
-                    <span class="job-tag">Flutter</span>
-                    <span class="job-tag">Dart</span>
-                    <span class="job-tag">Firebase</span>
-                </div>
-                <div class="job-footer">
-                    <span class="job-salary" data-base-salary="2500">2 500 €/mois</span>
-                    <span class="job-location">
-                        <span class="job-country-flag">🇸🇳</span> 
-                        <span class="job-country-name">Dakar, Sénégal</span>
-                    </span>
-                </div>
-            </div>
-
-            <div class="job-card fade-in" data-salary-eur="1800" data-salary-type="month">
-                <div class="job-header">
-                    <div>
-                        <div class="job-title">Comptable Senior</div>
-                        <div class="job-company">
-                            <i class="fas fa-building"></i> Finances & Co
-                        </div>
-                    </div>
-                    <span class="job-type">CDI</span>
-                </div>
-                <div class="job-tags">
-                    <span class="job-tag">Comptabilité</span>
-                    <span class="job-tag">SAP</span>
-                    <span class="job-tag">Audit</span>
-                </div>
-                <div class="job-footer">
-                    <span class="job-salary" data-base-salary="1800">1 800 €/mois</span>
-                    <span class="job-location">
-                        <span class="job-country-flag">🇨🇮</span> 
-                        <span class="job-country-name">Abidjan, Côte d'Ivoire</span>
-                    </span>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
         <div style="text-align: center; margin-top: 3rem;">
-            <a href="/recherche-metier.php" class="btn btn-primary">
+            <a href="/offres" class="btn btn-primary">
                 <i class="fas fa-list"></i> Voir toutes les offres
             </a>
         </div>
@@ -1216,8 +992,8 @@ if (empty($latest_jobs)) {
             <a href="/inscrit" class="btn btn-white">
                 <i class="fas fa-user-plus"></i> Créer un compte candidat
             </a>
-            <a href="/publier_offre.php" class="btn btn-outline" style="color: white; border-color: white;">
-                <i class="fas fa-building"></i> Publier une offre
+            <a href="/demande-employeur" class="btn btn-outline" style="color: white; border-color: white;">
+                <i class="fas fa-building"></i> Espace employeur
             </a>
         </div>
     </section>
@@ -1247,17 +1023,16 @@ if (empty($latest_jobs)) {
             </div>
             <div class="footer-section">
                 <h4>Candidats</h4>
-                <a href="/recherche-metier.php">Rechercher un emploi</a>
+                <a href="/offres">Rechercher un emploi</a>
                 <a href="/inscrit">Créer un profil</a>
-                <a href="/matching">Matching IA</a>
-                <a href="/conseils">Conseils carrière</a>
+                <a href="/offres">Toutes les offres</a>
+                <a href="/dashboard">Mon tableau de bord</a>
             </div>
             <div class="footer-section">
                 <h4>Employeurs</h4>
-                <a href="/register?type=employeur">Publier une offre</a>
-                <a href="/tarifs">Nos tarifs</a>
-                <a href="/cvtheque">CVthèque</a>
-                <a href="/solutions">Solutions RH</a>
+                <a href="/demande-employeur">Créer un compte employeur</a>
+                <a href="/connexion">Se connecter</a>
+                <a href="/offres">Voir les offres</a>
             </div>
             <div class="footer-section">
                 <h4>Contact</h4>
@@ -1354,7 +1129,7 @@ if (empty($latest_jobs)) {
             event.preventDefault();
             const keyword = document.getElementById('search-keyword').value;
             const location = document.getElementById('search-location').value;
-            window.location.href = `/recherche-metier.php?keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}`;
+            window.location.href = `/offres?q=${encodeURIComponent(keyword)}&lieu=${encodeURIComponent(location)}`;
         }
 
         // Smooth scroll pour les ancres

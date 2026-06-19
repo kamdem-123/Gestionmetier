@@ -336,26 +336,50 @@
             <li><i class="fas fa-check"></i><span>Contactez directement les recruteurs</span></li>
         </ul>
 
-        <!-- Lien Laravel vers Google -->
+        <!-- Google OAuth -->
         <a href="<?php echo route('google.redirect'); ?>" class="btn-social">
             <i class="fab fa-google"></i>
             Continuer avec Google
         </a>
 
-        <p class="terms">
-            En vous connectant, vous acceptez nos <a href="#">Conditions commerciales générales</a> 
-            et notre <a href="#">Politique de confidentialité</a>.
-        </p>
-
         <div class="divider"><span>ou</span></div>
 
-        <a href="<?php echo route('login'); ?>" class="btn-email">
-            <i class="far fa-envelope"></i>
-            Continuer avec une adresse e-mail
-        </a>
+        <!-- Formulaire email / mot de passe -->
+        <?php if ($errors->any()): ?>
+            <div style="background:#fee2e2;color:#991b1b;padding:0.75rem 1rem;border-radius:10px;font-size:0.85rem;margin-bottom:1rem;">
+                <?= e($errors->first()) ?>
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="<?php echo route('connexion.submit'); ?>">
+            <?= csrf_field() ?>
+            <div style="margin-bottom:0.85rem;">
+                <label style="display:block;font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:0.35rem;">Adresse e-mail</label>
+                <input type="email" name="email" value="<?= e(old('email')) ?>"
+                    placeholder="votre@email.com" required
+                    style="width:100%;padding:0.75rem 1rem;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.9rem;outline:none;font-family:inherit;transition:border-color .2s;"
+                    onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#e2e8f0'">
+            </div>
+            <div style="margin-bottom:1.1rem;">
+                <label style="display:block;font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:0.35rem;">Mot de passe</label>
+                <input type="password" name="password"
+                    placeholder="••••••••" required
+                    style="width:100%;padding:0.75rem 1rem;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.9rem;outline:none;font-family:inherit;transition:border-color .2s;"
+                    onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#e2e8f0'">
+            </div>
+            <button type="submit" class="btn-email" style="width:100%;border:none;cursor:pointer;">
+                <i class="far fa-envelope"></i>
+                Se connecter
+            </button>
+        </form>
 
         <p class="login-link">
             Vous n'avez pas de compte ? <a href="<?php echo route('inscrit'); ?>">S'inscrire</a>
+        </p>
+
+        <p class="terms">
+            En vous connectant, vous acceptez nos <a href="#">Conditions d'utilisation</a>
+            et notre <a href="#">Politique de confidentialité</a>.
         </p>
     </div>
 

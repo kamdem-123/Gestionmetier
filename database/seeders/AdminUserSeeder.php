@@ -13,20 +13,24 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::where('email', 'admin@example.com')->first();
-        if (!$user) {
-            User::create([
-                'name' => 'Admin',
-                'email' => 'admin@example.com',
-                'password' => Hash::make('AdminPass123!'),
-                'is_admin' => true,
-            ]);
-        } else {
-            // Ensure admin flag and name are set but do NOT change the existing password
-            $user->update([
-                'name' => 'Admin',
-                'is_admin' => true,
-            ]);
+        $emails = ['admin@example.com', 'admin@jobai.test'];
+
+        foreach ($emails as $email) {
+            $user = User::where('email', $email)->first();
+            if (!$user) {
+                User::create([
+                    'name' => 'Admin JobAI',
+                    'email' => $email,
+                    'password' => Hash::make('AdminPass123!'),
+                    'is_admin' => true,
+                ]);
+            } else {
+                $user->update([
+                    'name' => 'Admin JobAI',
+                    'password' => Hash::make('AdminPass123!'),
+                    'is_admin' => true,
+                ]);
+            }
         }
     }
 }

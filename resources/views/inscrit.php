@@ -342,17 +342,55 @@
             Continuer avec Google
         </a>
 
-        <p class="terms">
-            En créant un compte, vous acceptez nos <a href="#">Conditions commerciales générales</a> 
-            et notre <a href="#">Politique de confidentialité</a>.
-        </p>
-
         <div class="divider"><span>ou</span></div>
 
-        <a href="<?php echo route('register'); ?>" class="btn-email">
-            <i class="far fa-envelope"></i>
-            Continuer avec une adresse e-mail
-        </a>
+        <!-- Formulaire inscription email -->
+        <?php if ($errors->any()): ?>
+            <div style="background:#fee2e2;color:#991b1b;padding:0.75rem 1rem;border-radius:10px;font-size:0.85rem;margin-bottom:1rem;">
+                <?= e($errors->first()) ?>
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="<?php echo route('inscrit.submit'); ?>">
+            <?= csrf_field() ?>
+            <div style="margin-bottom:0.75rem;">
+                <label style="display:block;font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:0.35rem;">Nom complet</label>
+                <input type="text" name="name" value="<?= e(old('name')) ?>"
+                    placeholder="Jean Dupont" required
+                    style="width:100%;padding:0.75rem 1rem;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.9rem;outline:none;font-family:inherit;transition:border-color .2s;"
+                    onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#e2e8f0'">
+            </div>
+            <div style="margin-bottom:0.75rem;">
+                <label style="display:block;font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:0.35rem;">Adresse e-mail</label>
+                <input type="email" name="email" value="<?= e(old('email')) ?>"
+                    placeholder="votre@email.com" required
+                    style="width:100%;padding:0.75rem 1rem;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.9rem;outline:none;font-family:inherit;transition:border-color .2s;"
+                    onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#e2e8f0'">
+            </div>
+            <div style="margin-bottom:0.75rem;">
+                <label style="display:block;font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:0.35rem;">Mot de passe</label>
+                <input type="password" name="password"
+                    placeholder="Minimum 8 caractères" required
+                    style="width:100%;padding:0.75rem 1rem;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.9rem;outline:none;font-family:inherit;transition:border-color .2s;"
+                    onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#e2e8f0'">
+            </div>
+            <div style="margin-bottom:1.1rem;">
+                <label style="display:block;font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:0.35rem;">Confirmer le mot de passe</label>
+                <input type="password" name="password_confirmation"
+                    placeholder="••••••••" required
+                    style="width:100%;padding:0.75rem 1rem;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.9rem;outline:none;font-family:inherit;transition:border-color .2s;"
+                    onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#e2e8f0'">
+            </div>
+            <button type="submit" class="btn-email" style="width:100%;border:none;cursor:pointer;">
+                <i class="fas fa-user-plus"></i>
+                Créer mon compte
+            </button>
+        </form>
+
+        <p class="terms" style="margin-top:1rem;">
+            En créant un compte, vous acceptez nos <a href="#">Conditions d'utilisation</a>
+            et notre <a href="#">Politique de confidentialité</a>.
+        </p>
 
         <p class="login-link">
             Vous avez déjà un compte ? <a href="<?php echo route('connexion'); ?>">Se connecter</a>
